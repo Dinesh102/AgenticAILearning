@@ -11,6 +11,8 @@
 		<maven.compiler.target>21</maven.compiler.target>
 	</properties>
 	<dependencies>
+
+
 		<dependency>
 			<groupId>com.openai</groupId>
 			<artifactId>openai-java</artifactId>
@@ -21,6 +23,12 @@
 			<groupId>dev.langchain4j</groupId>
 			<artifactId>langchain4j-open-ai</artifactId>
 			<version>1.22.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j</artifactId>
+			<version>1.20.0</version>
 		</dependency>
 	</dependencies>
 </project>

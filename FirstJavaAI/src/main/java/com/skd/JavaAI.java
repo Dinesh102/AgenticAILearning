@@ -16,7 +16,7 @@ public class JavaAI {
 
 		System.out.println(System.getProperty("java.version"));
 
-
+		String apiKey = System.getenv("OPENAI_API_KEY");
 		String body = """
 				{
 					"model" : "gpt-5.4-mini",
@@ -26,12 +26,10 @@ public class JavaAI {
 		HttpClient httpClient = HttpClient.newHttpClient();
 
 		HttpRequest httpReq = HttpRequest.newBuilder().uri(URI.create("https://api.openai.com/v1/responses"))
-				.header("Authorization", "Bearer " + apiKey)
-				.POST(BodyPublishers.ofString(body))
-				.build();
-		
+				.header("Authorization", "Bearer " + apiKey).POST(BodyPublishers.ofString(body)).build();
+
 		HttpResponse<String> response = httpClient.send(httpReq, BodyHandlers.ofString());
-		
+
 		System.out.println(response.body());
 
 		// HttpClient httpClient = HttpClient.newHttpClient();
