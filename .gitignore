@@ -1,0 +1,8 @@
+# Ignore generated build output
+**/target/
+**/target/**
+**/*.class
+
+# IDE and tool metadata
+.settings/
+.mvn/
