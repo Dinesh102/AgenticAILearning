@@ -1,6 +1,5 @@
 package com.skd.streaming;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import dev.langchain4j.model.chat.response.ChatResponse;
@@ -11,23 +10,27 @@ public class LangChain4JStreaming {
 
 	public static void main(String[] args) {
 
+//		SystemMessage sysMes = SystemMessage
+//				.systemMessage("Repond very professionally and politely anything asked outside java deny it");
+
 		String apiKey = System.getenv("OPENAI_API_KEY");
+
+//		OpenAiChatModel model = OpenAiChatModel.builder().apiKey(apiKey).modelName("gpt-5.4-mini").build();
+//
+//		UserMessage userMess = UserMessage
+//				.userMessage("Say something nice and add 'Hello to java World' and add very importatnt concent");
+//		ChatResponse answer = model.chat(sysMes, userMess);
+//		System.out.println(answer.aiMessage().text());
 
 		OpenAiStreamingChatModel streamModel = OpenAiStreamingChatModel.builder().apiKey(apiKey)
 				.modelName("gpt-5.4-mini").build();
 
 		CompletableFuture<ChatResponse> chatStreamRes = new CompletableFuture<>();
 
-		StringBuilder initalResponse = new StringBuilder();
-
-		streamModel.chat("Explain very importatnt concent in 100 words", new StreamingChatResponseHandler() {
+		streamModel.chat("Explain very importatnt concent", new StreamingChatResponseHandler() {
 
 			@Override
 			public void onPartialResponse(String partialMessage) {
-				initalResponse.append(partialMessage);
-				if (partialMessage.toString().length() > 50) {
-					chatStreamRes.complete(false);
-				}
 				System.out.println("partital" + partialMessage);
 
 			}
@@ -36,7 +39,6 @@ public class LangChain4JStreaming {
 			public void onCompleteResponse(ChatResponse completeResponse) {
 				chatStreamRes.complete(completeResponse);
 				System.out.println("partital" + completeResponse.aiMessage().text());
-
 			}
 
 			@Override
@@ -47,31 +49,6 @@ public class LangChain4JStreaming {
 		});
 
 		chatStreamRes.join();
-
-		CompletableFuture<ChatResponse> chatStreamRetryRes = new CompletableFuture<>();
-
-		streamModel.chat(
-				List.of("Explain very importatnt concent in 100 words", initalResponse.toString(),
-				"dont repeat contine from where it was left"), new StreamingChatResponseHandler() {
-
-					@Override
-					public void onPartialResponse(String partialMessage) {
-
-					}
-
-					@Override
-					public void onCompleteResponse(ChatResponse completeResponse) {
-						chatStreamRetryRes.complete(completeResponse);
-						System.out.println("partital" + completeResponse.aiMessage().text());
-
-					}
-
-					@Override
-					public void onError(Throwable error) {
-						chatStreamRetryRes.completeExceptionally(error);
-					}
-
-				});
 	}
 
 }
