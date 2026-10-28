@@ -21,14 +21,14 @@ public class LangChain4JStreamingWithRetry {
 
 		StringBuilder initalResponse = new StringBuilder();
 
-		streamModel.chat("Explain very importatnt concent in 100 words", new StreamingChatResponseHandler() {
+		streamModel.chat("Explain very importatnt concent in java 100 words", new StreamingChatResponseHandler() {
 
 			@Override
 			public void onPartialResponse(PartialResponse partialMessage, PartialResponseContext context) {
 
-				if (initalResponse.toString().length() > 50) {
+				if (initalResponse.toString().length() > 100) {
 					chatStreamRes.complete(false);
-					System.out.println("1" + initalResponse.toString());
+
 				} else {
 					initalResponse.append(partialMessage.text());
 				}
@@ -55,10 +55,14 @@ public class LangChain4JStreamingWithRetry {
 			return;
 		}
 
+		System.out.println("1" + initalResponse.toString());
+
 		CompletableFuture<ChatResponse> chatStreamRetryRes = new CompletableFuture<>();
 
-		streamModel.chat(new StringBuilder().append("Explain very importatnt concent in 100 words")
-				.append(initalResponse.toString()).append("dont repeat contine from where it was left").toString(),
+		streamModel.chat(
+				new StringBuilder().append("Explain very importatnt concent in java 100 words. faied response : ")
+						.append(initalResponse.toString())
+						.append(";dont repeat contine from where it failed attaching the failed response ").toString(),
 				new StreamingChatResponseHandler() {
 
 					@Override
