@@ -2,8 +2,11 @@ package com.skd.basic;
 
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.http.StreamResponse;
 import com.openai.models.responses.Response;
 import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseStreamEvent;
+import com.openai.models.responses.ResponseUsage;
 
 public class SDKJavaAI {
 
@@ -17,11 +20,22 @@ public class SDKJavaAI {
 				"open ai lib used to generate the code sucessfull execute using java dependecy bit how did it ran")
 				.build();
 
-		Response response = client.responses().create(params);
+		try (StreamResponse<ResponseStreamEvent> response = client.responses().createStreaming(params)) {
 
-		response.output().stream().flatMap(item -> item.message().stream())
-				.flatMap(message -> message.content().stream()).flatMap(content -> content.outputText().stream())
-				.forEach(outputText -> System.out.println(outputText.text()));
+			response.stream().forEach(event -> {
+				event.outputTextDelta().ifPresent(textEvent -> System.out.print(textEvent.delta()));
+
+				// the complete response with token usage
+				event.completed().ifPresent(completedEvent -> {
+					// Completed event contains final response metadata, including usage if
+					// available.
+					ResponseUsage usage = completedEvent.response().usage().orElseThrow();
+					System.out.println("\n");
+					System.out.println("input tokens  : " + usage.inputTokens());
+					System.out.println("output tokens : " + usage.outputTokens());
+				});
+			});
+		}
+
 	}
-
 }

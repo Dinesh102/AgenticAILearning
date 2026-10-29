@@ -1,6 +1,7 @@
 package com.skd.controller;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,5 +33,18 @@ public class StreamChatController {
 	public Flux<String> chatModel(@RequestParam String message) {
 		return chatClient.prompt().system("Act as Java developer and deny any other request").user(message).stream()
 				.content();
+	}
+
+	@GetMapping("/chat/md")
+	public Flux<String> chatModelWithMetaData(@RequestParam String message) {
+		return chatClient.prompt().system("Act as Java developer and deny any other request").user(message).stream()
+				.chatResponse().map(res -> {
+					return new StringBuilder().append((res.getResult() != null && res.getResult().getMetadata() != null)
+							? res.getResult().getMetadata()
+							: "Empty Metadata")
+							.append((res.getResult() != null && res.getResult().getMetadata() != null)
+									? res.getResult().getOutput().getText()
+									: " EMpty response").toString();
+				});
 	}
 }
