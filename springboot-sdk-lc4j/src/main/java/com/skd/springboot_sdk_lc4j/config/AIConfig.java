@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 
+import dev.langchain4j.model.openai.OpenAiChatModel;
+
 @Configuration
 public class AIConfig {
 
@@ -21,4 +23,10 @@ public class AIConfig {
 	public OpenAIClient openAIClient() {
 		return OpenAIOkHttpClient.builder().apiKey(apiKey).build();
 	}
+
+	@Bean
+	public OpenAiChatModel langChain4JClient() {
+		return OpenAiChatModel.builder().apiKey(apiKey).modelName("gpt-5.4-mini").build();
+	}
+
 }
