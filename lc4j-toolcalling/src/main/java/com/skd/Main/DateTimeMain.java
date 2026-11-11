@@ -19,7 +19,7 @@ public class DateTimeMain {
 		DateTimeTool tools = new DateTimeTool();
 
 		DateTimeAssistant support = AiServices.builder(DateTimeAssistant.class).chatModel(model).tools(tools).build();
-		String answer = support.chat("what is current time in UK");
+		String answer = support.chat("what is current time in India");
 
 		System.out.println(answer);
 
