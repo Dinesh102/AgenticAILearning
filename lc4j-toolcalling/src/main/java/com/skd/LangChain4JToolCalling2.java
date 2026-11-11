@@ -7,6 +7,7 @@ import dev.langchain4j.agent.tool.ToolSpecifications;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
+import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.service.AiServices;
 
@@ -22,14 +23,25 @@ public class LangChain4JToolCalling2 {
 		List<ToolSpecification> toolsSpec = ToolSpecifications.toolSpecificationsFrom(tools);
 
 		ChatRequest request = ChatRequest.builder()
-				.messages(UserMessage.from("what is python couse price and how many days"))
+				.messages(UserMessage.from("what is Python course price and how many days"))
 				.toolSpecifications(toolsSpec).build();
-		model.chat(request);
+		ChatResponse res = model.chat(request);
 
 //		CourseAssistance support = AiServices.builder(CourseAssistance.class).chatModel(model).tools(tools).build();
 //		String answer = support.chat("what is python couse price and how many days");
 
 		System.out.println(request);
+
+		System.out.println(res);
+
+		if (res.aiMessage().hasToolExecutionRequests()) {
+			String arg = res.aiMessage().toolExecutionRequests().getFirst().arguments();
+
+			String response = model.chat(tools.getCourseDuration(arg));
+
+			System.out.println(model.chat(response));
+
+		}
 
 	}
 }
