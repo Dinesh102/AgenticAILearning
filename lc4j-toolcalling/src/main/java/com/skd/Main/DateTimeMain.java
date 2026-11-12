@@ -1,7 +1,5 @@
 package com.skd.Main;
 
-import com.skd.CourseAssistance;
-import com.skd.CourseTools;
 import com.skd.aiservice.DateTimeAssistant;
 import com.skd.tools.DateTimeTool;
 
